@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerrado Tech - Visão Computacional</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Bibliotecas de IA (TensorFlow.js, COCO-SSD, PoseDetection, FaceAPI) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js" defer></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <div class="container">
+        <header class="glass-panel header">
+            <div class="logo">
+                <span class="logo-icon">🍃</span>
+                <h1>Cerrado Tech</h1>
+                <span class="badge-pro">LAB</span>
+            </div>
+            <p class="subtitle">Inteligência Artificial & Robotização | Desenvolvido por Prof. Renato Rosa</p>
+        </header>
+
+        <main class="main-content">
+            <div class="video-container glass-panel">
+                <div id="loader" class="loader-overlay">
+                    <div class="spinner"></div>
+                    <p id="loader-text">Iniciando Sistemas Cerrado Tech...</p>
+                </div>
+                
+                <video id="webcam" autoplay playsinline muted></video>
+                <canvas id="canvas"></canvas>
+                
+                <!-- HUD de Performance -->
+                <div class="hud" id="hud" style="display: none;">
+                    <div class="hud-item">
+                        <span class="hud-label">FPS</span>
+                        <span class="hud-value" id="hud-fps">0</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">Inference Time</span>
+                        <span class="hud-value" id="hud-inference">0ms</span>
+                    </div>
+                </div>
+
+                <div class="camera-not-active" id="camera-prompt">
+                    <p>Sistemas de Visão Desligados.</p>
+                    <p class="small-text">Selecione um módulo e ative a câmera.</p>
+                </div>
+            </div>
+
+            <aside class="controls-panel glass-panel">
+                <h2>Painel de Controle</h2>
+                
+                <div class="status-indicator">
+                    <div class="status-dot" id="status-dot"></div>
+                    <span id="status-text">Aguardando...</span>
+                </div>
+
+                <!-- Configurações -->
+                <div class="settings-group">
+                    <div class="input-group">
+                        <label for="ai-module">Módulo de IA</label>
+                        <select id="ai-module" class="form-control form-select-primary">
+                            <option value="objects">📦 Detecção de Objetos</option>
+                            <option value="pose">🧍‍♂️ Linguagem Corporal (Postura)</option>
+                            <option value="face">😊 Expressões Faciais</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="camera-select">Fonte de Vídeo</label>
+                        <select id="camera-select" class="form-control" disabled>
+                            <option value="">Aguardando permissão...</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group" id="threshold-container">
+                        <label for="threshold-slider">
+                            Sensibilidade: <span id="threshold-val" class="text-accent">60%</span>
+                        </label>
+                        <input type="range" id="threshold-slider" min="10" max="95" value="60" class="slider" disabled>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="btn-start" class="btn btn-primary" disabled>
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                        Ativar
+                    </button>
+                    <button id="btn-stop" class="btn btn-secondary" disabled>
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                        Parar
+                    </button>
+                </div>
+
+                <button id="btn-snapshot" class="btn btn-outline" disabled>
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    Salvar Evidência
+                </button>
+
+                <div class="detections-list">
+                    <h3>Registro Ao Vivo</h3>
+                    <ul id="log-list">
+                        <li class="empty-log">Nenhum evento registrado.</li>
+                    </ul>
+                </div>
+            </aside>
+        </main>
+        
+        <footer class="footer text-muted">
+            <p>&copy; 2026 Cerrado Tech - Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
